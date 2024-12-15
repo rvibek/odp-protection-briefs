@@ -1,0 +1,5 @@
+aiohttp>=3.11.10
+lxml-html-clean>=0.4.1
+pandas>=2.2.3
+requests-html>=0.10.0
+typing-extensions>=4.12.2
