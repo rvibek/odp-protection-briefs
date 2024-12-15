@@ -6,14 +6,29 @@ from typing import List, Dict
 import aiohttp
 from urllib.parse import urljoin
 import re
-import atexit
 import signal
+import os
 
-# Create a single session to be used throughout
+# Monkey patch to prevent cleanup
+def dummy_cleanup(*args, **kwargs):
+    pass
+
+class AsyncHTMLSessionFixed(AsyncHTMLSession):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.browser_args = ['--no-sandbox', '--disable-dev-shm-usage']
+    
+    async def close(self):
+        try:
+            if self.browser:
+                await self.browser.disconnect()
+        except:
+            pass
+
 async def create_session():
-    return AsyncHTMLSession()
+    return AsyncHTMLSessionFixed()
 
-async def extract_metadata_from_url(session: AsyncHTMLSession, url: str) -> Dict:
+async def extract_metadata_from_url(session: AsyncHTMLSessionFixed, url: str) -> Dict:
     try:
         # Fetch the page
         r = await session.get(url)
@@ -96,7 +111,7 @@ async def extract_metadata_from_url(session: AsyncHTMLSession, url: str) -> Dict
         print(f"Error processing {url}: {str(e)}")
         return None
 
-async def process_urls_concurrently(session: AsyncHTMLSession, urls: List[str], max_concurrent: int = 10):
+async def process_urls_concurrently(session: AsyncHTMLSessionFixed, urls: List[str], max_concurrent: int = 10):
     # Process URLs in chunks
     all_metadata = []
     for i in range(0, len(urls), max_concurrent):
