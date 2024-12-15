@@ -40,16 +40,17 @@ jobs:
           AUTHKEY: ${{ secrets.AUTHKEY }}
         run: uv run extract_urls.py
 
+      - uses: actions/checkout@v3
+
       - name: Commit and push JSON and TXT
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add -A
-          git commit -m "update data" -a || echo "No changes to commit"
-      
-      - name: push changes
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add -A
+            git commit -m "update data" -a || echo "No changes to commit"
+        
+      - name: Push changes
         uses: actions/checkout@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-
+            ref: ${{ github.ref }}  # Use the branch pushed to the workflow
+            token: ${{ secrets.GITHUB_TOKEN }}
