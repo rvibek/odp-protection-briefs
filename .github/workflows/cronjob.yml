@@ -48,7 +48,7 @@ jobs:
           git commit -m "update data" -a || echo "No changes to commit"
       
       - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
+        uses: actions/checkout@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
