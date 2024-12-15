@@ -1,4 +1,4 @@
-name: Fetch Data
+name: run cicd
 
 on:
   push:
