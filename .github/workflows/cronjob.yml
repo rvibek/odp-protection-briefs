@@ -29,7 +29,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install uv
-          uv pip install requests-html aiohttp
+          uv pip install -r requirements.txt
 
       - name: Run extract_urls.py
         env: 
@@ -37,7 +37,7 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
           AUTHKEY: ${{ secrets.AUTHKEY }}
-        run: uv run extract_urls.py
+        run: python extract_urls.py
 
       - name: Commit and push JSON and TXT
         env:
